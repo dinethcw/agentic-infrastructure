@@ -4,7 +4,7 @@ A Quarto research notebook for Dineth's applied AI investigation.
 
 ## Current setup status
 
-The source scaffold has passed a local Quarto 1.10.19 render. GitHub access is connected. Pages activation and the first live deployment remain to be verified.
+GitHub access, the Quarto build, and GitHub Pages deployment succeeded on 2026-10-19. Workflow run: https://github.com/dinethcw/agentic-infrastructure/actions/runs/39262298679
 
 Repository: dinethcw/agentic-infrastructure
 Site target: https://dinethcw.github.io/agentic-infrastructure/
