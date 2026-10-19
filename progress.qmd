@@ -15,6 +15,11 @@ Initial reading and problem selection.
 
 ## Next actions
 
-1. Verify the documentation workflow with a real reading note.
+1. Continue initial reading; identify a concrete benchmark task to inspect.
 2. Inspect existing benchmark tasks or reproduce a small published experiment.
 3. Choose one question suitable for a first investigation.
+
+## Completed work
+
+- **2026-10-19:** Quarto notebook built and deployed to GitHub Pages.
+- **2026-10-19:** Added the first [reading note](notes/building-effective-agents.qmd), covering foundational agent concepts from Anthropic's *Building effective agents*. Original submitted notes are preserved separately. No experiment has been run yet.

@@ -1,0 +1,95 @@
+---
+title: "Building effective agents — reading notes"
+author: "Dineth Wijayawardana"
+date: 2026-10-19
+date-modified: 2026-10-19
+description: "Definitions, agent feedback loops, simplicity, and tool interface design."
+categories: [reading, agents, foundations]
+---
+
+## Source and scope
+
+[Building effective agents](https://www.anthropic.com/engineering/building-effective-agents), Anthropic, **19 December 2024**. Credited authors: Erik S. and Barry Zhang. Engineering article based on practitioner experience, rather than a peer-reviewed research paper.
+
+Source checked **19 October 2026**. The current page warns that much of the tooling landscape has changed since publication. These notes capture foundational concepts; they do not establish the capabilities or failure rates of current models.
+
+This entry organizes my submitted notes, covering definitions, autonomous agents, and tool interface design. It is not a complete summary of every workflow in the article.
+
+## Definitions and setup
+
+**Large language model (LLM).** A mathematical model trained to recognize patterns in language and use those patterns to generate text. More concretely, a large collection of adjustable numbers—parameters—arranged in a computational structure that transforms an input into an output: a neural network.
+
+**Tool.** A function that an AI system can request to perform a specific action beyond generating text. For example, a web search tool finds information online, while a file reader retrieves a document's contents.
+
+**Code path.** A particular sequence of instructions followed when a program runs. Its path may depend on inputs or conditions.
+
+For example, a program contains a rule: if a receipt exceeds $100, send it for review; otherwise, approve it automatically.
+
+| Receipt | Code path |
+|---|---|
+| $150 | Read receipt → Check amount → Send for review |
+| $50 | Read receipt → Check amount → Approve automatically |
+
+### Workflows and agents
+
+The article distinguishes between:
+
+- **Workflows:** LLMs and tools follow predefined code paths.
+- **Agents:** LLMs dynamically direct their processes and tool use, controlling how they accomplish a task.
+
+The fundamental building block is the **augmented LLM**: an LLM enhanced with retrieval, tools, and memory. Two aspects matter when implementing these augmentations: tailoring them to the use case and providing an easy, well-documented interface for the LLM.
+
+One implementation mechanism is the **Model Context Protocol (MCP)**, a standard way for AI applications to connect to tools and sources of information.
+
+## How agents operate
+
+Agents begin with a command from, or an interactive discussion with, a human user. Once the task is clear, they plan and operate independently, returning to the human when more information or judgment is needed.
+
+During execution, agents should regularly check their outputs and assumptions against external evidence to assess progress. They can pause for human feedback at checkpoints or when encountering blockers.
+
+Tasks typically terminate upon completion. Stopping conditions, such as a maximum number of iterations, also help maintain control.
+
+Agents may handle sophisticated tasks while having a straightforward implementation: an LLM uses tools, receives environmental feedback, and repeats. Clear toolsets and documentation are therefore crucial.
+
+## When agents are useful
+
+Agents suit open-ended problems where the required number of steps is difficult to predict and a fixed path cannot be hardcoded. Examples include coding agents and computer-use agents.
+
+Autonomy supports scaling tasks in trusted environments, but also brings higher costs and the potential for compounding errors. The article recommends extensive testing in sandbox environments with appropriate guardrails.
+
+Two applications highlighted by Anthropic are **customer support** and **coding agents**. Their suitability comes from combining conversation and action with clear success criteria, feedback loops, and meaningful human oversight.
+
+## Design principles
+
+The guiding principle is to start simply and add complexity only when it demonstrably improves outcomes.
+
+The article gives three core principles:
+
+1. Maintain simplicity in agent design.
+2. Prioritize transparency by showing the agent's planning steps.
+3. Carefully craft the **agent-computer interface (ACI)** through tool documentation and testing.
+
+### Tool formats
+
+When designing tool inputs and outputs:
+
+1. Give models enough tokens to think before committing to an output that may be poorly reasoned.
+2. Keep formats close to those the model has naturally encountered in text.
+3. Minimize formatting overhead: the extra work required to express an action, beyond determining the action itself. Keep tool inputs easy to express.
+
+Put yourself in the model's shoes and invest effort in good ACIs.
+
+## Editorial clarifications
+
+*Assistant-added context, separate from my submitted notes:*
+
+- This is Anthropic's architectural terminology, not a universal definition. A workflow can contain model-driven choices inside a predefined structure.
+- A model requests a tool call; the surrounding application executes it and returns a result.
+- Environmental feedback is evidence, not guaranteed truth. A tool may fail, return stale information, or test the wrong property. Checks should match the actual success criteria.
+- Transparency can be provided through concise plans, actions, and results; this need not mean exposing a model's private internal reasoning.
+
+## Record
+
+No experiment or current-model performance claim is established by this reading entry. My submitted notes did not yet specify an experiment or a list of unresolved questions.
+
+[Original submitted notes](https://github.com/dinethcw/agentic-infrastructure/blob/main/records/2026-10-19-building-effective-agents.md), preserved separately. AI assistance was used for organization, light copyediting, source metadata checks, and the explicitly labeled editorial clarifications.
