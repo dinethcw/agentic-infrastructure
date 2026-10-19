@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - "*.qmd"
+    - "notes/**/*.qmd"
+    - "experiments/**/*.qmd"
+website:
+  title: "Dineth | Applied AI"
+  site-url: https://dinethcw.github.io/agentic-infrastructure/
+  navbar:
+    left:
+      - href: index.qmd
+        text: Project
+      - href: reading.qmd
+        text: Reading
+      - href: experiments.qmd
+        text: Experiments
+      - href: progress.qmd
+        text: Progress
+      - href: about.qmd
+        text: About
+  page-footer: "An ongoing applied AI investigation by Dineth."
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+    css: styles.css
+execute:
+  enabled: false

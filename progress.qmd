@@ -1,0 +1,20 @@
+---
+title: "Progress and decisions"
+---
+
+## Current phase
+
+Initial reading and problem selection.
+
+## Decisions
+
+| Date | Decision | Reason |
+|---|---|---|
+| 2026-10-19 | Start with a lightweight GitHub and Quarto research notebook. | Keep documentation close to the evidence and reduce manual administration. |
+| 2026-10-19 | Treat agent reliability as provisional. | Select a narrow problem based on relevance, feasibility, and initial evidence. |
+
+## Next actions
+
+1. Verify the documentation workflow with a real reading note.
+2. Inspect existing benchmark tasks or reproduce a small published experiment.
+3. Choose one question suitable for a first investigation.

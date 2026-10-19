@@ -1,0 +1,10 @@
+---
+title: "Reading notes"
+listing:
+  contents: notes
+  sort: "date desc"
+  type: default
+  fields: [date, title, description]
+---
+
+Notes will appear here after review. A paper's findings describe the systems and conditions tested in that paper; they do not automatically establish a limitation of current models.

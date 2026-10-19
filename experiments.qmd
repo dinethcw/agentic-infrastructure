@@ -1,0 +1,10 @@
+---
+title: "Experiments"
+listing:
+  contents: experiments
+  sort: "date desc"
+  type: default
+  fields: [date, title, description]
+---
+
+No experiments have been completed yet. Each investigation will document the question, setup, baselines, evidence, and limits of its conclusions.

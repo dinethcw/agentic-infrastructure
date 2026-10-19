@@ -1,0 +1,9 @@
+---
+title: "About"
+---
+
+I'm Dineth, a mathematics and physics graduate from Amherst College, currently working in consulting.
+
+This project is a way to learn applied AI through investigating a concrete problem, building an evaluation, and explaining the resulting evidence.
+
+I use AI assistants for implementation and documentation support. I am responsible for reviewing the interpretations, hypotheses, decisions, and conclusions published here.

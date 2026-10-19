@@ -1,0 +1,11 @@
+/_site/
+/.quarto/
+/.local-notes/
+__pycache__/
+.DS_Store
+.env
+
+**/*.quarto_ipynb
+/site_libs/
+/site_libs/
+/*.html

@@ -1,0 +1,4 @@
+:root { --bs-body-font-size: 1.05rem; }
+.quarto-title-block .quarto-title-banner { background: #f2f5f8; }
+main { max-width: 900px; }
+table { font-size: .95rem; }

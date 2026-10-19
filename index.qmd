@@ -1,0 +1,22 @@
+---
+title: "Agentic Infrastructure"
+subtitle: "Investigating AI reliability through small, reproducible experiments"
+---
+
+## The question
+
+Where do current AI systems fail in consequential, measurable ways, and what practical changes improve their reliability?
+
+Agent reliability is the provisional starting point. The specific research question will follow a review of existing work and a small reproduction.
+
+## Current status
+
+**Problem selection and initial reading.** No experiments or results have been published yet.
+
+## What this project will contain
+
+- [Reading notes](reading.qmd) connecting published claims to concrete examples and possible tests.
+- [Experiments](experiments.qmd) with explicit baselines, methods, evidence, and limitations.
+- [Progress](progress.qmd) recording meaningful decisions and next steps.
+
+Published findings, working hypotheses, and results reproduced here will be identified separately.
