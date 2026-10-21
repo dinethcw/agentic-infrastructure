@@ -23,3 +23,4 @@ Initial reading and problem selection.
 
 - **2026-10-19:** Quarto notebook built and deployed to GitHub Pages.
 - **2026-10-19:** Added the first [reading note](notes/building-effective-agents.qmd), covering foundational agent concepts from Anthropic's *Building effective agents*. Original submitted notes are preserved separately. No experiment has been run yet.
+- **2026-10-20:** Added [Demystifying evals for AI agents — reading notes](notes/demystifying-evals-for-ai-agents.qmd), covering graders, reliability metrics, and the [evaluation roadmap](notes/demystifying-evals-for-ai-agents.qmd#evaluation-roadmap). Original submitted notes are preserved separately. This is a reading milestone; no experiment has been run yet.

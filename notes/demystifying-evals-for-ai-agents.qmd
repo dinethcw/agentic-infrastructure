@@ -1,0 +1,126 @@
+---
+title: "Demystifying evals for AI agents — reading notes"
+author: "Dineth Wijayawardana"
+date: 2026-10-20
+date-modified: 2026-10-20
+description: "Evaluation components, graders, reliability metrics, and a practical roadmap for building trustworthy agent evaluations."
+categories: [reading, agents, evaluations]
+---
+
+## Source and scope
+
+[Demystifying evals for AI agents](https://www.anthropic.com/research/demystifying-evals-for-ai-agents), Anthropic, **9 January 2026**. Practitioner guidance from Anthropic's engineering team, rather than a peer-reviewed experimental paper. Source checked **20 October 2026**; the submitted engineering URL currently redirects to the research URL above.
+
+These notes organize my reading of evaluation definitions, grader choices, reliability metrics, and the development roadmap. The article also covers evaluation techniques for different agent types and complementary evaluation methods; these notes do not summarize every section. This reading does not establish a limitation of current models, and no results have been personally reproduced.
+
+## Why evaluations matter
+
+Good evaluations expose problems and behavioral changes before users encounter them. Without evaluations, debugging can become reactive: wait for complaints, reproduce a failure manually, fix it, and hope nothing else regressed. Teams lack a dependable way to distinguish regressions from noise, test changes across many scenarios, or measure improvement.
+
+Evaluations are useful throughout an agent's lifecycle. Early on, they force a definition of success; later, they help maintain quality. Their value can compound as the agent develops.
+
+Single-turn evaluations involve an input, a response, and grading logic. Multi-turn agent evaluations are more complicated because agents call tools and change their environment over several steps, allowing errors to propagate.
+
+## Definitions
+
+| Term | Meaning |
+|---|---|
+| Evaluation (eval) | A test that gives an AI system an input and applies grading logic to assess success. Automated evaluations can run during development without real users. |
+| Task / problem / test case | One test with defined inputs and success criteria. |
+| Trial | One attempt at a task. |
+| Grader | Logic that scores an aspect of performance; a task may use several graders. |
+| Assertion / check | A specific condition examined by a grader. |
+| Transcript / trace / trajectory | The recorded interactions in a trial: outputs, tool calls, intermediate results, and available reasoning records. |
+| Outcome | The environment's final state at the end of a trial. |
+| Evaluation harness | Infrastructure that supplies instructions and tools, runs trials, records interactions, grades results, and aggregates scores. |
+| Agent harness / scaffold | The system that processes inputs, manages tool execution, and returns results so a model can act as an agent. |
+| Evaluation suite | A collection of tasks measuring a capability or behavior, such as refunds, cancellations, and escalations in customer support. |
+
+When evaluating an agent, we evaluate **the model and its harness together**.
+
+## Choosing graders
+
+Graders examine some part of the transcript or the outcome. Agent evaluations can combine code-based, model-based, and human grading; choosing the appropriate combination is a central design decision.
+
+| Grader | Examples | Strengths | Limitations |
+|---|---|---|---|
+| Code-based | String comparisons, binary tests, static analysis, checks of final state | Fast, inexpensive, reproducible, easy to debug, precise about specified conditions | Can reject valid alternatives, miss nuance, and struggle with subjective qualities |
+| Model-based | Rubrics, natural-language assertions, pairwise or reference comparisons, multiple judges | Flexible, scalable, suited to open-ended and free-form outputs | Can vary across runs, costs more than simple code, needs calibration against human judgments |
+| Human | Expert review, crowdsourced judgments, sampled reviews | Can capture expert user expectations and calibrate model judges | Slow, expensive, dependent on suitable reviewers |
+
+The article also lists A/B testing and inter-annotator agreement alongside human evaluation methods.
+
+### Capability and regression evaluations
+
+**Capability evaluations** target tasks the agent struggles with, providing a way to measure improvement. Anthropic recommends starting these at a low pass rate.
+
+**Regression evaluations** test whether previously reliable behavior remains reliable. Anthropic recommends a near-100% pass rate for this purpose. A decline is a signal to investigate.
+
+As capabilities become reliable, their tasks can become regression tests. Improving capability scores should not come at the expense of established behavior.
+
+### Techniques by agent type
+
+My notes defer detailed methods to the article's [How to evaluate AI agents section](https://www.anthropic.com/research/demystifying-evals-for-ai-agents#how-to-evaluate-ai-agents), which covers coding, conversational, research, and computer-use agents. These can provide foundations to adapt once a project task is chosen.
+
+## Non-determinism and reliability metrics
+
+Agent behavior varies between trials. Repeated attempts help measure how often a task is completed successfully.
+
+| Metric | Success condition across k attempts | Useful when |
+|---|---|---|
+| pass@k | **At least one** attempt succeeds | A usable successful result can be found among several attempts |
+| pass^k | **All k** attempts succeed | Consistent behavior is essential, especially for customer-facing systems |
+
+## Evaluation development roadmap {#evaluation-roadmap}
+
+The source numbers the roadmap **0–8**, giving nine numbered steps. I expect this to be an important reference while building the project.
+
+### Collect an initial task set
+
+**Step 0 — Start early.** Anthropic suggests 20–50 simple tasks drawn from real failures as an initial suite. Mature systems may need larger, harder evaluations to detect smaller changes. Avoid waiting for a large dataset before beginning.
+
+**Step 1 — Begin with existing manual checks.** Turn the behaviors checked during development, common user tasks, and reported failures into evaluation cases. Prioritize user impact so the suite reflects meaningful usage.
+
+**Step 2 — Write unambiguous tasks with working reference solutions.** Two domain experts should be able to agree on a pass/fail judgment and solve the task themselves. The task must disclose the requirements that graders enforce; hidden assumptions introduce noise and can reject valid solutions. A known working solution that passes the graders checks solvability and grader configuration. Repeated zero-success results warrant an audit of the task and grading.
+
+**Step 3 — Test both sides of a behavior.** Include cases where an action should occur and cases where it should not. For example, evaluating only appropriate searches may encourage searching for everything.
+
+### Build the harness and graders
+
+**Step 4 — Use a stable environment and isolate trials.** The evaluated agent should operate similarly to its production version. Start each trial from a clean environment. Leftover files, cached data, shared history, and exhausted resources can distort results and create dependence between trials.
+
+**Step 5 — Design graders thoughtfully.** Prefer deterministic checks where appropriate, model grading where flexibility is needed, and human review for validation. Usually grade the result rather than demanding one exact sequence of actions. Recognize partial completion where meaningful. Calibrate model graders against experts, provide an option to abstain when evidence is insufficient, and consider separate rubrics for different dimensions. Test whether a grader can be bypassed without solving the task. Reduce human review only when evidence supports confidence in the grading system.
+
+### Maintain and use the suite
+
+**Step 6 — Inspect transcripts and grades.** Read many trials to check that failures are fair. Determine whether the agent actually made an error or the grader rejected a valid solution. Trace inspection also reveals harness problems and overlooked behaviors; it is a core development skill.
+
+**Step 7 — Watch for saturation.** A suite the agent already solves reliably can detect regressions but offers little room to measure improvement. Audit ambiguous tasks, unfair grading, and harness constraints before taking scores at face value.
+
+**Step 8 — Maintain the suite with clear ownership.** Treat evaluations as a living artifact. Keep tasks and infrastructure useful through regular updates and contributions from people who understand product requirements and users.
+
+**Emphasis from my notes:** Do not accept a score without examining how the evaluation works and reading trial transcripts. Revise the evaluation if it penalizes valid solutions or measures the wrong thing.
+
+## My reflection
+
+I expect the roadmap to be particularly important as I work through what feels like it could be a long and difficult process. I want to keep returning to it during the project.
+
+## Editorial clarifications
+
+*Assistant-added context, separate from my submitted interpretations:*
+
+- These grader families and the capability/regression distinction are useful categories, not an exhaustive taxonomy. Every evaluation need not use all three grader families.
+- Code can implement a flawed rule reproducibly. Human reviewers can disagree or make mistakes. Neither is automatically correct; check agreement and inspect edge cases.
+- A transcript contains what the system records or exposes. It need not include a model's private internal reasoning.
+- A zero pass rate is a reason to investigate task validity, not proof that the task is broken. A valid task can exceed a model's capabilities. A passing reference solution demonstrates at least one valid solution, not that every valid alternative is accepted.
+- A decline on regression tasks can reflect sampling variation or infrastructure problems as well as an agent regression. Repeated trials help distinguish them.
+- For one task, **if trials are independent with the same success probability p**, pass@k is \(1-(1-p)^k\), and pass^k is \(p^k\). For example, at p = 0.75 and k = 3, these are about 98.4% and 42.2%. Do not apply these formulas to a suite-wide average success rate when tasks have different probabilities. Retrying is useful only when the application can identify and use a successful attempt.
+- The article's 20–50-task suggestion is practitioner guidance, not a minimum for our first experiment or a guarantee of statistical power. We can verify a small pilot before expanding.
+- Outcome grading can be combined with necessary process constraints, such as following a required authorization policy. Partial credit should not conceal failure of a critical requirement.
+- Agreement between human and model judges should be checked again if tasks, rubrics, or models change. An instruction to return unknown permits abstention but does not ensure accuracy.
+
+## Record
+
+This is a reading milestone, not an experiment result. No project hypothesis or experiment has been selected by these notes alone.
+
+[Original submitted notes](https://github.com/dinethcw/agentic-infrastructure/blob/main/records/2026-10-20-demystifying-evals-for-ai-agents.md) are preserved separately. The unfinished trailing “Step 6.” in the submission is retained in that record; no missing content was inferred. AI assistance was used for organization, light copyediting, source verification, and the explicitly labeled editorial clarifications.
